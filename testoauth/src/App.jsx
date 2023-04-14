@@ -17,6 +17,7 @@ function App() {
   const [musics, setMusics] = useState([])
   const [selectedMusic, setSelected] = useState([])
   const [apiUrl, setApiUrl] = useState("https://api.spotify.com/v1/me/tracks")
+  const [playlist, setPlaylist] = useState([])
 
   useEffect(()=>{
     if(localStorage.getItem("refreshToken")){
@@ -54,6 +55,7 @@ function App() {
     .then(resp => {
       setApiUrl(resp?.next)
       setMusics([...musics, ...resp?.items])
+      setPlaylist([...musics.map(musica => musica.track.uri)])
       //console.log(musics)
       //console.log(resp) 
     })
@@ -67,7 +69,7 @@ function App() {
         <Route path='/' element={
           <Collection
             token={token} 
-            playlist={musics.map(musica => musica.track.uri)}
+            playlist={playlist}
             uris={selectedMusic} 
             musics={musics} 
             setSelected={ (e) => setSelected(e)}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SpotifyPlayer from 'react-spotify-web-playback';
 import {BsFillPlayFill, BsSoundwave  } from 'react-icons/bs'
 import {BiPause} from 'react-icons/bi'
@@ -10,9 +10,9 @@ function Collection({token, uris, musics, setSelected, authLink, playlist}){
     const [play, setPlay] = useState(true)
     const [currentTrack, setCurrent] = useState()
 
-    if(uris.length < 2){
-      setSelected([...playlist])
-    }
+    useEffect(()=>{
+      setSelected(...playlist)
+    }, [])
 
     function millisToMinutesAndSeconds(millis) {
       var minutes = Math.floor(millis / 60000);
@@ -56,6 +56,7 @@ function Collection({token, uris, musics, setSelected, authLink, playlist}){
   
       return `${day} de ${months[month]} de ${year}`
     }
+    
     return(
       <div className="App">
         {!token ? 
@@ -77,6 +78,7 @@ function Collection({token, uris, musics, setSelected, authLink, playlist}){
               {musics?.map((musica, i) =>{
               return(
                 <div 
+                key={i}
                 className="track" 
                 onMouseEnter={() => {
                   hover.current == musica.track.uri && play ? setHover({i: i, hover: 'pause', current: currentTrack }) : 
