@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import SpotifyPlayer from 'react-spotify-web-playback';
 import {BsFillPlayFill, BsSoundwave  } from 'react-icons/bs'
 import {BiPause} from 'react-icons/bi'
 import {HiOutlineClock} from 'react-icons/hi'
+import {AiFillHeart} from 'react-icons/ai'
+import './Collection.css'
 
-function Collection({token, uris, musics, setSelected, authLink, playlist}){
+function Collection({token, setPlay, musics, setSelected, authLink, playlist, currentTrack, play}){
 
     const [hover, setHover] = useState({i: null, hover: null})
-    const [play, setPlay] = useState(true)
-    const [currentTrack, setCurrent] = useState()
 
     useEffect(()=>{
       setSelected(...playlist)
@@ -63,18 +62,11 @@ function Collection({token, uris, musics, setSelected, authLink, playlist}){
         <a href={authLink}>
           Logar com Spotify
         </a>: ''}
+        <div className="collection_header">
+          
+        </div>
         <div className="musics">
-          <table border={0}>
-            <thead>
-              <tr>
-                <th className='header_button'>#</th>
-                <th className='header_title'>Título</th>
-                <th className='header_album'>Álbum</th>
-                <th className='header_added'>Adicionado em</th>
-                <th className='header_time'><HiOutlineClock /></th>
-              </tr>
-            </thead>
-            <tbody>
+            <div className="musics_container">
               {musics?.map((musica, i) =>{
               return(
                 <div 
@@ -85,8 +77,7 @@ function Collection({token, uris, musics, setSelected, authLink, playlist}){
                   setHover({i: i, hover: <BsFillPlayFill onClick={() => {setPlay(true)}}/>, current:  currentTrack})}}
                 onMouseLeave={() => {setHover({i: null, hover: null})}}
                 >
-                  <tr>
-                  <td className='play_button header_button'>
+                  <div className='play_button header_button'>
                     <button onClick={() => {
                       setSelected([musica.track.uri, ...playlist.filter(musc => musc != musica.track.uri)])
                     }} key={i} id={i} >
@@ -97,53 +88,36 @@ function Collection({token, uris, musics, setSelected, authLink, playlist}){
                        hover.i === i ? hover.hover : i + 1  
                        }
                     </button>
-                  </td>
-                  <td className='header_title'>
+                  </div>
+                  <div className='header_title'>
                     <div className="music_infos">
                       <div className="img">
                         <img src={musica.track.album.images[2].url} alt={musica.track.name}/>
                       </div>
                       <div className="music_title_artits">
-                        <span className={`music_name ${musica.track.uri == currentTrack ? 'paused' : ''}`}>{musica.track.name}</span>
-                        <span className='artist_name'>{musica.track.artists.map((artists, i) => {
-                          return i !== musica.track.artists.length - 1 ? artists.name + ', ' : artists.name
-                        })}</span>
+                        <a target="_blank" href={musica.track.external_urls.spotify} className={`music_name ${musica.track.uri == currentTrack ? 'paused' : ''}`}>{musica.track.name}</a>
+                        <span className="artist_name">
+                        {musica.track.artists.map((artista, i)=>{
+                          return i != musica.track.artists.length  - 1 ? <p><a target="_blank" href={artista.external_urls.spotify}>{artista.name}</a>, </p> : <a target="_blank" href={artista.external_urls.spotify}>{artista.name}</a>
+                        })}
+                        </span>
                       </div>
                     </div>
-                  </td>
-                  <td className='header_album'>
+                  </div>
+                  <div className='header_album'>
                     <span className="album_name">{musica.track.album.name}</span>
-                  </td>
-                  <td className='header_added'>
+                  </div>
+                  <div className='header_added'>
                     {formatDate(musica.added_at)}<br />
-                  </td>
-                  <td className='header_time'>
+                  </div>
+                  <div className='header_time'>
+                    <AiFillHeart color="#1ed760" />
                     {millisToMinutesAndSeconds(musica.track.duration_ms)}
-                  </td>
-                </tr>
+                  </div>
                 </div>
               )
               })}
-            </tbody>
-          </table>
-        </div>
-        <div className="player">
-          <SpotifyPlayer 
-            callback={(e) => setCurrent(e.track.uri)}
-            token={token}
-            uris={uris}
-            initialVolume={0.1}
-            inlineVolume={true}
-            layout='responsive'
-            magnifySliderOnHover={true}
-            play={play}
-            styles={{
-              bgColor: "#242424",
-              color: "white",
-              trackNameColor: "white",
-              trackArtistColor: "grey"
-            }}
-          /> 
+            </div>
         </div>
       </div>
     )

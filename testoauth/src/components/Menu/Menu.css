@@ -1,0 +1,25 @@
+.nav_bar{
+    width: 241px;
+    height: 92vh;
+    background-color: #000;
+    color: #a7a7a7;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.active{
+    color: white;
+}
+.nav_bar ul li{
+    padding: 10px 5px;
+}
+.logo{
+    font-size: 3rem;
+}
+
+.user_playlists{
+    border-top: 1px solid;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+}

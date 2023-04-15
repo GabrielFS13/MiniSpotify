@@ -3,10 +3,13 @@ import {Routes, Route, useLocation, useNavigate} from 'react-router-dom'
 import './App.css';
 
 import Collection from './components/Collection';
+import Menu from './components/Menu';
+import SpotifyPlayer from 'react-spotify-web-playback';
+
 
 const clientid = '5afe486064b145c6a8c852bd53deea04'
 const redirect = process.env.REACT_APP_REDIRECT_URI
-const scope = 'streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state user-library-read'
+const scope = 'streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state user-library-read playlist-read-private'
 const state = Math.floor(Math.random() * 10^3)
 const authLink = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientid}&scope=${scope}&redirect_uri=${redirect}&state=${state}`
 const baseURL = process.env.REACT_APP_BASE_URL
@@ -17,7 +20,13 @@ function App() {
   const [musics, setMusics] = useState([])
   const [selectedMusic, setSelected] = useState([])
   const [apiUrl, setApiUrl] = useState("https://api.spotify.com/v1/me/tracks")
+  const [playlistApiUrl, setPlaylistApiUrl] = useState("https://api.spotify.com/v1/me/playlists")
   const [playlist, setPlaylist] = useState([])
+  const [currentTrack, setCurrent] = useState()
+  const [play, setPlay] = useState(true)
+  const [playlists, setPlaylists] = useState([])
+
+
 
   useEffect(()=>{
     if(localStorage.getItem("refreshToken")){
@@ -45,7 +54,7 @@ function App() {
 
   useEffect(()=>{
     if(token){
-      fetch(apiUrl, {
+    fetch(apiUrl, {
         method: "GET",
         headers :{
             'Authorization': 'Bearer '+token
@@ -56,15 +65,35 @@ function App() {
       setApiUrl(resp?.next)
       setMusics([...musics, ...resp?.items])
       setPlaylist([...musics.map(musica => musica.track.uri)])
-      //console.log(musics)
-      //console.log(resp) 
+    })
+    .catch(err => console.log(err))
+
+    
+    }
+  }, [token, apiUrl])
+
+  useEffect(()=>{
+    if(token){
+      fetch(playlistApiUrl,{
+        method: "GET",
+        headers :{
+            'Authorization': 'Bearer '+token
+        } 
+    })
+    .then(resp => resp.json())
+    .then(resp => {
+      console.log(resp)
+      setPlaylists(resp.items)
+      resp.next ? setPlaylistApiUrl(resp.next) : setPlaylistApiUrl(playlistApiUrl)
+        
     })
     .catch(err => console.log(err))
     }
-  }, [token, apiUrl])
-  
+  }, [token, playlistApiUrl])
 
   return (
+    <>
+    <Menu playlists={playlists}/> 
       <Routes>
         <Route path='/' element={
           <Collection
@@ -74,9 +103,29 @@ function App() {
             musics={musics} 
             setSelected={ (e) => setSelected(e)}
             authLink = {authLink}
+            currentTrack={currentTrack}
+            play={play}
+            setPlay={(e)=> setPlay(e)}
           />} />
         <Route path='/callback' element={<Callback />}/>
       </Routes>
+      <div className="player">
+          <SpotifyPlayer 
+            callback={(e) => setCurrent(e.track.uri)}
+            token={token}
+            uris={selectedMusic}
+            initialVolume={0.1}
+            inlineVolume={true}
+            play={play}
+            styles={{
+              bgColor: "#242424",
+              color: "white",
+              trackNameColor: "white",
+              trackArtistColor: "grey"
+            }}
+          /> 
+        </div>
+    </>
   );
 }
 

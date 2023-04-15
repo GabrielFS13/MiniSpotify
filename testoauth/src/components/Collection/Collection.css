@@ -1,0 +1,115 @@
+.App{
+    background-color: #121212;
+    width: 100%;
+    color: #fff;
+}
+
+/* header, album, added, time, authors: #a7a7a7; */
+.musics_container{
+    overflow-y: scroll;
+    max-height: 92vh;
+}
+.track{
+    display: flex;
+    flex-direction: row;
+    padding: 12px 10px;
+    border-radius: 5px;
+}
+
+.track:hover{
+    background-color: hsla(0,0%,100%,.1);
+}
+.header_title{
+    width: 30vw;
+}
+
+.header_album{
+    width: 22vw;
+}
+
+.header_added{
+    width: 20vw;
+}
+
+.header_added, .header_album, .header_time{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.music_infos{
+    display: flex;
+    gap: 10px;
+}
+
+.music_infos .img{
+    width: 40px;
+    height: 40px;
+}
+
+.music_infos .img img{
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.music_title_artits{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.header_button{
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header_button button{
+    color: #a7a7a7;
+    border: none;
+    background-color: transparent;
+    font-size: 1rem;
+}
+.header_button button:hover{
+    cursor: pointer;
+}
+.music_name{
+    color: #Fff;
+    font-size: 1rem;
+    text-decoration: none;
+}
+.music_name:hover{
+    text-decoration: underline;
+}
+
+.artist_name{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.artist_name a{
+    color: #a7a7a7;
+    text-decoration: none;
+}
+
+.artist_name a:hover{
+    text-decoration: underline;
+}
+.album_name, .artist_name, .header_added, .header_time{
+    color: #a7a7a7;
+    font-family: 0.875rem;
+}
+
+.header_time{
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    align-items: center;
+    gap: 10px;
+}
+
+.paused{
+    color: green;
+}
