@@ -1,11 +1,13 @@
 import './Menu.css'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import {MdOutlineDownloadForOffline} from 'react-icons/md'
 import { useState } from 'react'
 
-export default function Menu({playlists}){
-    const [path, setPath] = useState()
-    console.log(path)
+export default function Menu({playlists, setChoice}){
+    var local = window.location.href.split('/')
+    local = local[local.length-1]
+    const [path, setPath] = useState(local ? "/"+local : 'liked')
+
     return(
         <nav className='nav_bar'>
             <div className="logo">
@@ -31,14 +33,17 @@ export default function Menu({playlists}){
             </div>
             <div className="user_playlists">
                 <ul>
-                    {playlists.map(playlist => { 
-                    console.log(path === playlist.id)
+                    {playlists.map(playlist => {
                     return(
                         playlist.name ? 
                         <li key={playlist.name} className={`${path == "/"+playlist.id ? 'active' : ''} `} > 
                             <Link to={`/${playlist.id}`} 
                             title={playlist.name}
-                            onClick={() => setPath("/"+playlist.id)}
+                            onClick={() => {
+                                setPath("/"+playlist.id)
+                                setChoice(playlist.name)
+                                
+                            }}
                             > 
                             {playlist.name} 
                             </Link>

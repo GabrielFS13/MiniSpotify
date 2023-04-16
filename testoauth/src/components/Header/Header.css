@@ -1,0 +1,47 @@
+header{
+    height: 340px;
+    padding: 32px;
+}
+
+header .header_nav{
+    display: flex;
+    position: relative;
+}
+header ul{
+    list-style: none;
+    display: flex;
+}
+
+.user_infos{
+    position: absolute;
+    right: 32px;
+}
+
+.play_playlist{
+    display: flex;
+    padding-top: 32px;
+    gap: 16px;
+    position: relative;
+
+}
+.play_playlist .img{
+    width: 232px;
+    height: 232px;
+    background-color: purple;
+}
+
+.infos{
+    position: absolute;
+    left: 250px;
+    bottom: 0;
+}
+
+.infos h1{
+    padding-top: 6px;
+    font-size: 6rem;
+}
+
+.userListInfos{
+    display: flex;
+    padding-top: 16px;
+}

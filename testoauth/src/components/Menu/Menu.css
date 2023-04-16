@@ -1,12 +1,12 @@
 .nav_bar{
     width: 241px;
-    height: 92vh;
+    height: 91vh;
     background-color: #000;
     color: #a7a7a7;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    padding: 8px 10px;
+    padding: 8px 16px;
 
 }
 .user_playlists li{
@@ -32,6 +32,7 @@
 }
 .nav_bar ul li{
     padding: 7px 5px;
+    list-style: none;
 }
 .logo{
     font-size: 3rem;

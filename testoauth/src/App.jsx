@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import {Routes, Route, useLocation, useNavigate, useParams} from 'react-router-dom'
+import {Routes, Route, useLocation, useNavigate} from 'react-router-dom'
 import './App.css';
 
 import Collection from './components/Collection';
@@ -24,7 +24,7 @@ function App() {
   const [currentTrack, setCurrent] = useState()
   const [play, setPlay] = useState(true)
   const [playlists, setPlaylists] = useState([])
-
+  const [choice, setChoice] = useState('')
   
   useEffect(()=>{
     if(localStorage.getItem("refreshToken")){
@@ -71,8 +71,9 @@ function App() {
   }, [token, playlistApiUrl])
 
   return (
-    <>
-    <Menu playlists={playlists}/> 
+    <div>
+      <div className='screen'>
+      <Menu playlists={playlists} setChoice={(e)=> setChoice(e)}/> 
       <Routes>
         <Route path='/'>
           <Route path="" element={
@@ -87,6 +88,8 @@ function App() {
             currentTrack={currentTrack}
             play={play}
             setPlay={(e)=> setPlay(e)}
+            currentList={"Músicas Curtidas"}
+
           />} />
           <Route path=":collectionType" element={            
             <Collection
@@ -100,10 +103,13 @@ function App() {
             currentTrack={currentTrack}
             play={play}
             setPlay={(e)=> setPlay(e)}
+            currentList={choice}
           />} />
         </Route>
         <Route path='/callback' element={<Callback />}/>
       </Routes>
+      </div>
+    
       <div className="player">
           <SpotifyPlayer 
             callback={(e) => {
@@ -116,14 +122,14 @@ function App() {
             inlineVolume={true}
             play={play}
             styles={{
-              bgColor: "#242424",
+              bgColor: "#181818",
               color: "white",
               trackNameColor: "white",
               trackArtistColor: "grey"
             }}
           /> 
         </div>
-    </>
+    </div>
   );
 }
 
