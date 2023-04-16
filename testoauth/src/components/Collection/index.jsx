@@ -1,17 +1,57 @@
 import { useEffect, useState } from "react";
 import {BsFillPlayFill, BsSoundwave  } from 'react-icons/bs'
 import {BiPause} from 'react-icons/bi'
-import {HiOutlineClock} from 'react-icons/hi'
 import {AiFillHeart} from 'react-icons/ai'
 import './Collection.css'
+import { useParams } from "react-router-dom";
 
-function Collection({token, setPlay, musics, setSelected, authLink, playlist, currentTrack, play}){
+function Collection({token, setPlay, musics, setSelected, authLink, playlist, currentTrack, play, setPlaylist, setMusics}){
+
+  const [apiUrl, setApiUrl] = useState("https://api.spotify.com/v1/me/tracks")
+  const {collectionType} = useParams()
+  
+  useEffect(()=>{
+    if(collectionType){
+      //pega o id da playlist
+      //chama aq `https://api.spotify.com/v1/playlists/${playlist_id}`
+      setApiUrl(`https://api.spotify.com/v1/playlists/${collectionType}`)
+      setMusics([])
+      setPlaylist([])
+    }else{
+      setApiUrl("https://api.spotify.com/v1/me/tracks")
+      setMusics([])
+      setPlaylist([])
+    }
+  }, [collectionType])
 
     const [hover, setHover] = useState({i: null, hover: null})
 
     useEffect(()=>{
-      setSelected(...playlist)
-    }, [])
+      fetch(apiUrl, {
+          method: "GET",
+          headers :{
+              'Authorization': 'Bearer '+token
+          }
+      })
+      .then(resp => resp.json())
+      .then(resp => {
+        if(resp.type === 'playlist'){
+          setMusics([...musics, ...resp?.tracks?.items])
+          setPlaylist([...musics.map(music => music.track.uri)])
+          setApiUrl(resp?.next)
+        }else{
+          setMusics([...musics, ...resp?.items])
+          setPlaylist([...musics.map(music => music.track.uri)])
+          setApiUrl(resp?.next)
+        }
+      })
+      .catch(err => console.log(err))
+      
+    }, [token, apiUrl])
+
+    useEffect(()=>{
+      setSelected(playlist)
+    }, [apiUrl])
 
     function millisToMinutesAndSeconds(millis) {
       var minutes = Math.floor(millis / 60000);
@@ -95,17 +135,17 @@ function Collection({token, setPlay, musics, setSelected, authLink, playlist, cu
                         <img src={musica.track.album.images[2].url} alt={musica.track.name}/>
                       </div>
                       <div className="music_title_artits">
-                        <a target="_blank" href={musica.track.external_urls.spotify} className={`music_name ${musica.track.uri == currentTrack ? 'paused' : ''}`}>{musica.track.name}</a>
+                        <a target="_blank" rel="noreferrer" href={musica.track.external_urls.spotify} className={`music_name ${musica.track.uri == currentTrack ? 'paused' : ''}`}>{musica.track.name}</a>
                         <span className="artist_name">
                         {musica.track.artists.map((artista, i)=>{
-                          return i != musica.track.artists.length  - 1 ? <p><a target="_blank" href={artista.external_urls.spotify}>{artista.name}</a>, </p> : <a target="_blank" href={artista.external_urls.spotify}>{artista.name}</a>
+                          return i != musica.track.artists.length  - 1 ? <p key={i}><a target="_blank" rel="noreferrer" href={artista.external_urls.spotify}>{artista.name}</a>, </p> : <a key={i} target="_blank" rel="noreferrer" href={artista.external_urls.spotify}>{artista.name}</a>
                         })}
                         </span>
                       </div>
                     </div>
                   </div>
                   <div className='header_album'>
-                    <span className="album_name">{musica.track.album.name}</span>
+                    <span className="album_name"><a target="_blank" rel="noreferrer" href={musica.track.album.external_urls.spotify}>{musica.track.album.name}</a></span>
                   </div>
                   <div className='header_added'>
                     {formatDate(musica.added_at)}<br />

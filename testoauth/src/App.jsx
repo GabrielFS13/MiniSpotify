@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import {Routes, Route, useLocation, useNavigate} from 'react-router-dom'
+import {Routes, Route, useLocation, useNavigate, useParams} from 'react-router-dom'
 import './App.css';
 
 import Collection from './components/Collection';
@@ -19,15 +19,13 @@ function App() {
   const [token, setToken] = useState()
   const [musics, setMusics] = useState([])
   const [selectedMusic, setSelected] = useState([])
-  const [apiUrl, setApiUrl] = useState("https://api.spotify.com/v1/me/tracks")
   const [playlistApiUrl, setPlaylistApiUrl] = useState("https://api.spotify.com/v1/me/playlists")
   const [playlist, setPlaylist] = useState([])
   const [currentTrack, setCurrent] = useState()
   const [play, setPlay] = useState(true)
   const [playlists, setPlaylists] = useState([])
 
-
-
+  
   useEffect(()=>{
     if(localStorage.getItem("refreshToken")){
       let code = localStorage.getItem("refreshToken")
@@ -52,25 +50,7 @@ function App() {
     }
   }, [state])
 
-  useEffect(()=>{
-    if(token){
-    fetch(apiUrl, {
-        method: "GET",
-        headers :{
-            'Authorization': 'Bearer '+token
-        }
-    })
-    .then(resp => resp.json())
-    .then(resp => {
-      setApiUrl(resp?.next)
-      setMusics([...musics, ...resp?.items])
-      setPlaylist([...musics.map(musica => musica.track.uri)])
-    })
-    .catch(err => console.log(err))
-
-    
-    }
-  }, [token, apiUrl])
+  
 
   useEffect(()=>{
     if(token){
@@ -82,7 +62,6 @@ function App() {
     })
     .then(resp => resp.json())
     .then(resp => {
-      console.log(resp)
       setPlaylists(resp.items)
       resp.next ? setPlaylistApiUrl(resp.next) : setPlaylistApiUrl(playlistApiUrl)
         
@@ -95,23 +74,42 @@ function App() {
     <>
     <Menu playlists={playlists}/> 
       <Routes>
-        <Route path='/' element={
-          <Collection
+        <Route path='/'>
+          <Route path="" element={
+            <Collection
             token={token} 
             playlist={playlist}
-            uris={selectedMusic} 
             musics={musics} 
+            setMusics = {(e) => setMusics(e)}
+            setPlaylist = {(e) => setPlaylist(e)}
             setSelected={ (e) => setSelected(e)}
             authLink = {authLink}
             currentTrack={currentTrack}
             play={play}
             setPlay={(e)=> setPlay(e)}
           />} />
+          <Route path=":collectionType" element={            
+            <Collection
+            token={token} 
+            playlist={playlist}
+            musics={musics} 
+            setMusics = {(e) => setMusics(e)}
+            setPlaylist = {(e) => setPlaylist(e)}
+            setSelected={ (e) => setSelected(e)}
+            authLink = {authLink}
+            currentTrack={currentTrack}
+            play={play}
+            setPlay={(e)=> setPlay(e)}
+          />} />
+        </Route>
         <Route path='/callback' element={<Callback />}/>
       </Routes>
       <div className="player">
           <SpotifyPlayer 
-            callback={(e) => setCurrent(e.track.uri)}
+            callback={(e) => {
+              console.log(e)
+              setCurrent(e.track.uri)
+            }}
             token={token}
             uris={selectedMusic}
             initialVolume={0.1}

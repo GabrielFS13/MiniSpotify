@@ -6,12 +6,32 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    padding: 8px 10px;
+
 }
-.active{
+.user_playlists li{
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+.user_playlists a, .nav_bar a{
+    color: #a7a7a7;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+.user_playlists a:hover, .nav_bar a:hover{ 
+    color: white;
+    cursor: default;
+}
+.active a{
     color: white;
 }
 .nav_bar ul li{
-    padding: 10px 5px;
+    padding: 7px 5px;
 }
 .logo{
     font-size: 3rem;
@@ -21,5 +41,17 @@
     border-top: 1px solid;
     display: flex;
     flex-direction: column;
+    overflow-y: hidden;
+}
+.user_playlists:hover{
     overflow-y: scroll;
+}
+
+.download{
+    font-size: 1rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
 }

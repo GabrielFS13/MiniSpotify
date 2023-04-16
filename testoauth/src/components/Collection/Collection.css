@@ -89,12 +89,12 @@
     gap: 5px;
 }
 
-.artist_name a{
+.artist_name a, .album_name a{
     color: #a7a7a7;
     text-decoration: none;
 }
 
-.artist_name a:hover{
+.artist_name a:hover , .album_name a:hover{
     text-decoration: underline;
 }
 .album_name, .artist_name, .header_added, .header_time{
