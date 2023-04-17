@@ -1,13 +1,31 @@
 import './Menu.css'
 import { Link } from 'react-router-dom'
 import {MdOutlineDownloadForOffline} from 'react-icons/md'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 
-export default function Menu({playlists, setChoice}){
+export default function Menu({setChoice, token}){
     var local = window.location.href.split('/')
     local = local[local.length-1]
     const [path, setPath] = useState(local ? "/"+local : 'liked')
+    const [apiUrl, setPlaylistApiUrl] = useState('https://api.spotify.com/v1/me/playlists')
+    const [playlists, setPlaylists] = useState([])
+    useEffect(() => {
+        if (token) {
+          fetch(apiUrl, {
+            method: "GET",
+            headers: {
+              'Authorization': 'Bearer ' + token
+            }
+          })
+            .then(resp => resp.json())
+            .then(resp => {
+              setPlaylists(resp.items)
+              resp.next ? setPlaylistApiUrl(resp.next) : setPlaylistApiUrl(apiUrl)
+            })
+            .catch(err => console.log(err))
+        }
+      }, [token, apiUrl])
     return(
         <nav className='nav_bar'>
             <div className="logo">

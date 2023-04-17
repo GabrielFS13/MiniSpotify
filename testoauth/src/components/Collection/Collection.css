@@ -18,6 +18,11 @@
 
 }
 
+.musics{
+    background-color: rgba(18, 18, 18, 0.1);
+    position: relative;
+}
+
 
 .track:hover{
     background-color: hsla(0,0%,100%,.1);
@@ -115,4 +120,36 @@
 
 .paused{
     color: green;
+}
+
+.play_btn{
+    padding: 24px 32px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 10px;
+
+}
+
+.play_btn .header_button{
+    background-color: #1ed760;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.play_btn .header_button:hover{
+    transform: scale(1.05);
+}
+.play_btn .header_button:focus{
+    transform: scale(1);
+}
+
+
+
+.play_button .header_button svg{
+    padding-left: 3px;
 }
