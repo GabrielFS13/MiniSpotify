@@ -113,7 +113,10 @@ function App() {
       <div className="player">
           <SpotifyPlayer 
             callback={(e) => {
-              //console.log(e)
+              console.log(e)
+              if(e.error){
+                this.forceUpdate()
+              }
               setCurrent(e.track.uri)
             }}
             token={token}

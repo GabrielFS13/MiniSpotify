@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import './Header.css'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function Header({ token, currentList, listCount, authLink }) {
 
-    console.log(currentList[0])
+    //console.log(currentList[0])
     const [color, setColor] = useState()
+    const navigate = useNavigate()
     //getUser info
 
     //getPlaylistinfo
@@ -13,8 +15,8 @@ export default function Header({ token, currentList, listCount, authLink }) {
             <nav className='header_nav'>
                 <div className="navButtons">
                     <ul>
-                        <li><button to={(e) => ''}>Voltar</button></li>
-                        <li><button to={(e) => ''}>Avançar</button></li>
+                        <li><Link to={''}>Voltar</Link></li>
+                        <li><Link to={''}>Avançar</Link></li>
                     </ul>
                 </div>
                 <div className="user_infos">

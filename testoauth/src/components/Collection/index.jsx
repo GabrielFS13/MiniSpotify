@@ -42,13 +42,13 @@ function Collection({token, setPlay, musics, setSelected, currentList, playlist,
           setPlaylist([...musics.map(music => music.track.uri)])
           setApiUrl(resp?.next)
           setLen(resp.tracks.total)
-          console.log(resp)
+          //console.log(resp)
         }else{
           setMusics([...musics, ...resp?.items])
           setPlaylist([...musics.map(music => music.track.uri)])
           setApiUrl(resp?.next)
           setLen(resp.total)
-          console.log(resp)
+          //console.log(resp)
 
         }
       })
