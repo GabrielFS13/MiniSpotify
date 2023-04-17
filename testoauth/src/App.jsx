@@ -88,7 +88,7 @@ function App() {
             currentTrack={currentTrack}
             play={play}
             setPlay={(e)=> setPlay(e)}
-            currentList={"Músicas Curtidas"}
+            currentList={[{name: "Musicas Curtidas", owner: {display_name:  "current_user", external_urls: ""}, images: ['', 'placeholder']}]}
 
           />} />
           <Route path=":collectionType" element={            
@@ -113,7 +113,7 @@ function App() {
       <div className="player">
           <SpotifyPlayer 
             callback={(e) => {
-              console.log(e)
+              //console.log(e)
               setCurrent(e.track.uri)
             }}
             token={token}
@@ -121,6 +121,7 @@ function App() {
             initialVolume={0.1}
             inlineVolume={true}
             play={play}
+            layout="responsive"
             styles={{
               bgColor: "#181818",
               color: "white",

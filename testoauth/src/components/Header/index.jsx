@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import './Header.css'
 
-export default function Header({token, currentList, listCount}){
-    
+export default function Header({ token, currentList, listCount, authLink }) {
+
+    console.log(currentList[0])
     const [color, setColor] = useState()
     //getUser info
 
@@ -18,24 +19,28 @@ export default function Header({token, currentList, listCount}){
                 </div>
                 <div className="user_infos">
                     {"User Info"}
+                    <a href={authLink}>Logar</a>
                 </div>
             </nav>
             <div className="play_playlist">
-                 <div className="img">
-                    
-                 </div>
-                 <div className="infos">
+                <div className="img">
+                    <img src={currentList[0].images.length > 1 ? currentList[0]?.images[1]?.url : currentList[0]?.images[0]?.url} alt={currentList[0].name} desc={currentList[0].description} />
+                </div>
+                <div className="infos">
                     <span>Playlist</span>
-                    <h1 style={currentList.length > 20 ? {fontSize: 2+"rem"} : {}} >{currentList}</h1>
+                    <h1 style={currentList[0].name.length > 28 ? { fontSize: "2rem" } : {}} >{currentList[0].name}</h1>
                     <div className="userListInfos">
                         <div className="userInfos">
-                            {"User Infos "}
+                            <div className="user_img">
+
+                            </div>
+                            <a href={currentList[0].owner.external_urls.spotify} target="_blank" rel="noopener noreferrer">{currentList[0].owner.display_name}</a>
                         </div>
                         <div className="listCount">
                             {listCount}
                         </div>
                     </div>
-                 </div>
+                </div>
             </div>
         </header>
     )

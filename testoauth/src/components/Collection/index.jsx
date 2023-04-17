@@ -6,29 +6,25 @@ import './Collection.css'
 import { useParams } from "react-router-dom";
 import Header from "../Header";
 
-function Collection({token, setPlay, musics, setSelected, currentList, playlist, currentTrack, play, setPlaylist, setMusics}){
+function Collection({token, setPlay, musics, setSelected, currentList, playlist, currentTrack, play, setPlaylist, setMusics, authLink}){
 
   const [apiUrl, setApiUrl] = useState("https://api.spotify.com/v1/me/tracks")
   const {collectionType} = useParams()
   const [listLen, setLen] = useState(0)
   const [hover, setHover] = useState({i: null, hover: null})
 
-  useEffect(()=>{
-    setLen(musics.length)
-  })
 
   useEffect(()=>{
     if(collectionType){
       //pega o id da playlist
       //chama aq `https://api.spotify.com/v1/playlists/${playlist_id}`
       setApiUrl(`https://api.spotify.com/v1/playlists/${collectionType}`)
-      setMusics([])
-      setPlaylist([])
     }else{
       setApiUrl("https://api.spotify.com/v1/me/tracks")
-      setMusics([])
-      setPlaylist([])
     }
+    setMusics([])
+    setPlaylist([])
+    setLen(0)
   }, [collectionType])
 
 
@@ -45,12 +41,16 @@ function Collection({token, setPlay, musics, setSelected, currentList, playlist,
           setMusics([...musics, ...resp?.tracks?.items])
           setPlaylist([...musics.map(music => music.track.uri)])
           setApiUrl(resp?.next)
+          setLen(resp.tracks.total)
+          console.log(resp)
         }else{
           setMusics([...musics, ...resp?.items])
           setPlaylist([...musics.map(music => music.track.uri)])
           setApiUrl(resp?.next)
-        }
+          setLen(resp.total)
+          console.log(resp)
 
+        }
       })
       .catch(err => console.log(err))
       
@@ -106,7 +106,7 @@ function Collection({token, setPlay, musics, setSelected, currentList, playlist,
     return(
       <div className="App">
         <div className="collection_header">
-         <Header currentList={currentList} listCount={listLen}/>
+         <Header currentList={currentList} listCount={listLen} authLink={authLink}/>
         </div>
         <div className="musics">
             <div className="musics_container">

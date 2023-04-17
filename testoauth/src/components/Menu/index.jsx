@@ -7,7 +7,6 @@ export default function Menu({playlists, setChoice}){
     var local = window.location.href.split('/')
     local = local[local.length-1]
     const [path, setPath] = useState(local ? "/"+local : 'liked')
-
     return(
         <nav className='nav_bar'>
             <div className="logo">
@@ -26,7 +25,9 @@ export default function Menu({playlists, setChoice}){
                     <li className={`${path == 'liked'  ? 'active' : ''} `}>
                         <Link 
                         to='/' 
-                        onClick={() => setPath('liked')}
+                        onClick={() => {
+                            setPath('liked')
+                        }}
                         >Músicas Curtidas</Link>
                     </li>
                 </ul>
@@ -41,7 +42,7 @@ export default function Menu({playlists, setChoice}){
                             title={playlist.name}
                             onClick={() => {
                                 setPath("/"+playlist.id)
-                                setChoice(playlist.name)
+                                setChoice([playlist])
                                 
                             }}
                             > 

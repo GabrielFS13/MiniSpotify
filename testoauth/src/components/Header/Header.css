@@ -30,6 +30,11 @@ header ul{
     background-color: purple;
 }
 
+.play_playlist .img img{
+    max-width: 100%;
+    max-height: 100%;
+}
+
 .infos{
     position: absolute;
     left: 250px;
