@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import {MdOutlineDownloadForOffline} from 'react-icons/md'
 import { useState } from 'react'
 
+
 export default function Menu({playlists, setChoice}){
     var local = window.location.href.split('/')
     local = local[local.length-1]

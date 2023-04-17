@@ -1,5 +1,5 @@
 header{
-    height: 340px;
+    height: 400px;
     padding: 32px;
 }
 
@@ -46,7 +46,41 @@ header ul{
     font-size: 6rem;
 }
 
+.infos a{
+    text-decoration: none;
+    color: white;
+    padding-right: 8px;
+}
+
 .userListInfos{
     display: flex;
     padding-top: 16px;
+}
+
+header .play_button{
+    padding: 24px 32px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 10px;
+}
+
+header .play_button .header_button{
+    background-color: #1ed760;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.play_button .header_button:hover{
+    transform: scale(1.05);
+}
+
+
+
+.play_button .header_button svg{
+    padding-left: 3px;
 }
