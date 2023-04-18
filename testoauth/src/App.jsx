@@ -88,6 +88,8 @@ function App() {
         {token && <SpotifyPlayer
           callback={(e) => {
             setCurrent(e.track.uri)
+            setPlay(e.isPlaying)
+            console.log(e)
           }}
           token={token}
           uris={selectedMusic.list_musics}
