@@ -70,7 +70,7 @@ export default function Header({ token, listCount, authLink, setColor, duration 
       }
 
     return (
-        playlistInfos && currentUser && <header>
+        playlistInfos && currentUser ? <header>
             <nav className='header_nav'>
                 <div className="navButtons">
                     <ul>
@@ -86,7 +86,6 @@ export default function Header({ token, listCount, authLink, setColor, duration 
                         {currentUser.display_name}
                         <AiFillCaretDown />
                     </div>
-                    {!token ? <a href={authLink}>Logar</a> : ''}
                 </div>
             </nav>
             <div className="play_playlist">
@@ -112,5 +111,6 @@ export default function Header({ token, listCount, authLink, setColor, duration 
                 </div>
             </div>
         </header>
+        : !token ? <a href={authLink}>Logar</a> : ''
     )
 }
