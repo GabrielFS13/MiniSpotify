@@ -3,8 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import { ColorExtractor } from 'react-color-extractor'
 import { useEffect, useState } from 'react'
 import { AiFillCaretDown } from 'react-icons/ai'
-
-export default function Header({ token, listCount, authLink, setColor, duration }) {
+import { SlArrowLeft, SlArrowRight} from 'react-icons/sl'
+export default function Header({ token, listCount, authLink, setColor }) {
 
     const { collectionType } = useParams()
     const [currentUser, setCurrentUser] = useState()
@@ -55,27 +55,25 @@ export default function Header({ token, listCount, authLink, setColor, duration 
                             }
                         })
                     }
-                    console.log(resp)
                 })
                 .catch(err => console.log(err))
                 .finally(e => console.log(e))
         }
     }, [token, collectionType])
-
-    function formatHour(count){
+    function formatHour(count) {
         var totMinutos = Math.floor(count * 3.5)
         var horas = Math.floor(totMinutos / 60)
         var minutos = totMinutos % 60
         return ` cerca de ${horas}h ${minutos}min`
-      }
+    }
 
     return (
         playlistInfos && currentUser ? <header>
             <nav className='header_nav'>
                 <div className="navButtons">
-                    <ul>
-                        <li><Link to={''}>Voltar</Link></li>
-                        <li><Link to={''}>Avançar</Link></li>
+                    <ul className='nav_links'>
+                        <li><Link to={''}><SlArrowLeft /></Link></li>
+                        <li><Link to={''}><SlArrowRight /></Link></li>
                     </ul>
                 </div>
                 <div className="user_infos">
@@ -90,7 +88,9 @@ export default function Header({ token, listCount, authLink, setColor, duration 
             </nav>
             <div className="play_playlist">
                 <div className="img">
-                    <ColorExtractor rgb getColors={colors => setColor({ backgroundImage: `linear-gradient(rgba(${colors[0][0]},${colors[0][1]},${colors[0][2]}, 0.8) 400px, #121212 550px)` })}>
+                    <ColorExtractor rgb getColors={colors => setColor(
+                        { backgroundImage: `linear-gradient(rgba(${colors[0][0]},${colors[0][1]},${colors[0][2]}, 1) 10px, #121212 550px)` }
+                    )}>
                         <img src={playlistInfos.images.length > 1 ? playlistInfos?.images[1]?.url : playlistInfos?.images[0]?.url} alt={playlistInfos.name} desc={playlistInfos.description} />
                     </ColorExtractor>
                 </div>
@@ -101,16 +101,32 @@ export default function Header({ token, listCount, authLink, setColor, duration 
                         <div className="userInfos">
                             <div className="user_img">
                                 <div className="userIMG">
-                                    <img alt="Owner IMG"/>
+                                    <img alt="Owner IMG" />
                                 </div>
                             </div>
-                            <a href={playlistInfos.owner.external_urls.spotify} target="_blank" rel="noopener noreferrer">{playlistInfos.owner.display_name}</a>
-                            {collectionType ? playlistInfos?.followers.total + " curtidas " + listCount + " músicas, "+ formatHour(listCount): listCount + " Músicas"}
+                            <a
+                                href={playlistInfos.owner.external_urls.spotify}
+                                target="_blank" rel="noopener noreferrer"
+                                className='owner_name'
+                            >{playlistInfos.owner.display_name}</a>
+                            {collectionType ?
+                                <ul className='playlist_infos'>
+                                    <li>
+                                        {playlistInfos?.followers.total} curtidas
+                                    </li>
+                                    <li>
+                                        {listCount} Músicas,
+                                    </li>
+                                    <p className='hour_avg'>
+                                        {formatHour(listCount)}
+                                    </p>
+                                </ul>
+                                : listCount + " Músicas"}
                         </div>
                     </div>
                 </div>
             </div>
         </header>
-        : !token ? <a href={authLink}>Logar</a> : ''
+            : !token ? <a href={authLink}>Logar</a> : ''
     )
 }

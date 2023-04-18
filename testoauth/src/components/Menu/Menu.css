@@ -10,11 +10,18 @@
 
 }
 .user_playlists li{
+    position: relative;
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100%;
+}
+.current_list_btn{
+    background-color: transparent;
+    border: none;
+    position: absolute;
+    right: 0px;
 }
 .user_playlists a, .nav_bar a{
     color: #a7a7a7;

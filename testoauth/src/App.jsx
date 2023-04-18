@@ -18,7 +18,6 @@ function App() {
   const { state } = useLocation()
   const [token, setToken] = useState()
   const [selectedMusic, setSelected] = useState([])
-  const [playlist, setPlaylist] = useState([])
   const [currentTrack, setCurrent] = useState()
   const [play, setPlay] = useState(false)
   const [choice, setChoice] = useState()
@@ -50,31 +49,36 @@ function App() {
   return (
     <div>
       <div className='screen'>
-        <Menu token={token} setChoice={(e) => setChoice(e)} />
+        <Menu 
+        token={token} 
+        setChoice={(e) => setChoice(e)} 
+        currentList={selectedMusic?.playlist} 
+        play={play}
+        setPlay={(e)=> setPlay(e)}
+        />
         <Routes>
           <Route path='/'>
             <Route path="" element={
               <Collection
                 token={token}
-                playlist={playlist}
-                setPlaylist={(e) => setPlaylist(e)}
                 setSelected={(e) => setSelected(e)}
                 authLink={authLink}
                 currentTrack={currentTrack}
                 play={play}
                 setPlay={(e) => setPlay(e)}
+                currentList={selectedMusic?.playlist} 
 
               />} />
             <Route path=":collectionType" element={
               <Collection
                 token={token}
-                playlist={playlist}
-                setPlaylist={(e) => setPlaylist(e)}
                 setSelected={(e) => setSelected(e)}
                 authLink={authLink}
                 currentTrack={currentTrack}
                 play={play}
                 setPlay={(e) => setPlay(e)}
+                currentList={selectedMusic?.playlist} 
+
               />} />
           </Route>
           <Route path='/callback' element={<Callback />} />
@@ -86,7 +90,7 @@ function App() {
             setCurrent(e.track.uri)
           }}
           token={token}
-          uris={selectedMusic}
+          uris={selectedMusic.list_musics}
           initialVolume={0.1}
           inlineVolume={true}
           play={play}

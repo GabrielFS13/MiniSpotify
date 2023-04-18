@@ -7,9 +7,21 @@ header .header_nav{
     display: flex;
     position: relative;
 }
-header ul{
+header .nav_links{
     list-style: none;
     display: flex;
+    gap: 16px;
+}
+
+.nav_links li a{
+    color: #a7a7a7;
+    background-color: #121212;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: not-allowed;
 }
 
 .user_infos{
@@ -86,3 +98,26 @@ header ul{
     border-radius: 50%;
 }
 
+.userListInfos .userInfos{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.userListInfos .userInfos .owner_name{
+    color: white;
+    font-weight: 600;
+}
+
+.userListInfos .userInfos .playlist_infos{
+    display: flex;
+    list-style: disc;
+    gap: 16px;
+}
+.playlist_infos li{
+    margin-left: 6px;
+}
+
+.play_playlist .hour_avg{
+    color: #a7a7a7;
+}

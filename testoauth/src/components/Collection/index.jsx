@@ -6,7 +6,7 @@ import './Collection.css'
 import { useParams } from "react-router-dom";
 import Header from "../Header";
 
-function Collection({ token, setPlay, setSelected, playlist, currentTrack, play, setPlaylist, authLink }) {
+function Collection({ token, setPlay, setSelected, currentTrack, play, authLink, currentList }) {
 
   const [apiUrl, setApiUrl] = useState("https://api.spotify.com/v1/me/tracks")
   const { collectionType } = useParams()
@@ -14,7 +14,7 @@ function Collection({ token, setPlay, setSelected, playlist, currentTrack, play,
   const [hover, setHover] = useState({ i: null, hover: null })
   const [color, setColor] = useState({ backgroundColor: `rgb(${0},${0},${0})` })
   const [musics, setMusics] = useState([])
-  const [duration, setDuration] = useState(0)
+
   useEffect(() => {
     if (collectionType) {
       //pega o id da playlist
@@ -24,7 +24,6 @@ function Collection({ token, setPlay, setSelected, playlist, currentTrack, play,
       setApiUrl("https://api.spotify.com/v1/me/tracks")
     }
     setMusics([])
-    setPlaylist([])
     setLen(0)
   }, [collectionType])
 
@@ -39,20 +38,18 @@ function Collection({ token, setPlay, setSelected, playlist, currentTrack, play,
       .then(resp => resp.json())
       .then(resp => {
         if (resp.type === 'playlist') {
-          setMusics([...musics, ...resp?.tracks?.items])
+          setMusics([...musics, ...resp.tracks.items])
           setApiUrl(resp?.next)
           setLen(resp.tracks.total)
-          setDuration(resp.tracks.items.map(((music) => music.track.duration_ms )))
-          setDuration(duration.reduce((acc, curr) => acc + curr, 0))
+
           //console.log(resp)
         } else {
           setMusics([...musics, ...resp?.items])
           setApiUrl(resp?.next)
           setLen(resp.total)
           //console.log(resp)
-        }
-        setPlaylist([...musics.map(music => music.track.uri)])
 
+        }
       })
       .catch(err => console.log(err))
 
@@ -102,20 +99,52 @@ function Collection({ token, setPlay, setSelected, playlist, currentTrack, play,
     return `${day} de ${months[month]} de ${year}`
   }
 
+
   return (
     <div className="App" style={color}>
       <div className="collection_header">
-        <Header currentList={collectionType} listCount={listLen} authLink={authLink} setColor={(e) => setColor(e)} token={token} duration={duration}/>
+        <Header currentList={collectionType} listCount={listLen} authLink={authLink} setColor={(e) => setColor(e)} token={token} />
       </div>
       <div className="musics" >
         <div className="play_btn">
-          <div className='header_button' >
-            {play && <BiPause size={30} color='black' onClick={() => setPlay(false)} />}
-            {!play && <BsFillPlayFill size={30} color='black' onClick={() => {
+          {collectionType && 
+          <div className='header_button'>
+            {!play && currentList ? <BsFillPlayFill size={30} color="black" onClick={() => {
               setPlay(true)
-              setSelected([...musics.map(music => music.track.uri)])
-            }} />}
-          </div>
+              setSelected({
+                playlist: collectionType ? collectionType : '',
+                list_musics: [...musics.map(music => music.track.uri)]
+              })
+            }}/> 
+            : currentList == collectionType ? <BiPause size={30} color='black' onClick={() => setPlay(false)}  /> : 
+            <BsFillPlayFill size={30} color="black" onClick={() => {
+              setPlay(true)
+              setSelected({
+                playlist: collectionType ? collectionType : '',
+                list_musics: [...musics.map(music => music.track.uri)]
+              })
+            }}/> 
+            }
+          </div>}
+          {!collectionType && 
+          <div className='header_button'>
+            {!play  && <BsFillPlayFill size={30} color="black" onClick={() => {
+              setPlay(true)
+              setSelected({
+                playlist: collectionType ? collectionType : '',
+                list_musics: [...musics.map(music => music.track.uri)]
+              })
+            }}/> 
+            }
+            {play && !currentList && <BiPause size={30} color='black' onClick={() => setPlay(false)}  /> }
+            {currentList && play && <BsFillPlayFill size={30} color="black" onClick={() => {
+              setPlay(true)
+              setSelected({
+                playlist: collectionType ? collectionType : '',
+                list_musics: [...musics.map(music => music.track.uri)]
+              })
+            }}/> }
+          </div>}
           ...
         </div>
         <div className="musics_container">
@@ -132,7 +161,10 @@ function Collection({ token, setPlay, setSelected, playlist, currentTrack, play,
               >
                 <div className='play_button header_button'>
                   <button onClick={() => {
-                    setSelected([musica.track.uri, ...playlist.filter(musc => musc != musica.track.uri)])
+                    setSelected({
+                      playlist: collectionType ? collectionType : '',
+                      list_musics: [musica.track.uri, ...musics.filter(musc => musc.track.uri != musica.track.uri ).map(m => m.track.uri)]
+                    })
                   }} key={i} id={i} >
                     {
                       hover.hover === 'pause' && hover.i === i ? <BiPause onClick={() => setPlay(!play)} /> :
