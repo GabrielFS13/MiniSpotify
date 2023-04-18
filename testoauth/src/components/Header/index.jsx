@@ -4,15 +4,11 @@ import { ColorExtractor } from 'react-color-extractor'
 import { useEffect, useState } from 'react'
 import { AiFillCaretDown } from 'react-icons/ai'
 
-export default function Header({ token, listCount, authLink, setColor }) {
+export default function Header({ token, listCount, authLink, setColor, duration }) {
 
     const { collectionType } = useParams()
     const [currentUser, setCurrentUser] = useState()
     // getUser info
-
-    // getPlaylistinfo
-    const [playlistInfos, setPlaylistInfos] = useState()
-
     useEffect(() => {
         if (token) {
             fetch("https://api.spotify.com/v1/me", {
@@ -28,6 +24,8 @@ export default function Header({ token, listCount, authLink, setColor }) {
                 .catch(err => console.log(err))
         }
     }, [token])
+    // getPlaylistinfo
+    const [playlistInfos, setPlaylistInfos] = useState()
 
     useEffect(() => {
         if (token) {
@@ -52,16 +50,27 @@ export default function Header({ token, listCount, authLink, setColor }) {
                             },
                             images: ['', { url: './curtidas.png' }],
                             description: '',
+                            followers: {
+                                total: null
+                            }
                         })
                     }
+                    console.log(resp)
                 })
                 .catch(err => console.log(err))
+                .finally(e => console.log(e))
         }
     }, [token, collectionType])
 
+    function formatHour(count){
+        var totMinutos = Math.floor(count * 3.5)
+        var horas = Math.floor(totMinutos / 60)
+        var minutos = totMinutos % 60
+        return ` cerca de ${horas}h ${minutos}min`
+      }
 
     return (
-        playlistInfos && <header>
+        playlistInfos && currentUser && <header>
             <nav className='header_nav'>
                 <div className="navButtons">
                     <ul>
@@ -92,12 +101,12 @@ export default function Header({ token, listCount, authLink, setColor }) {
                     <div className="userListInfos">
                         <div className="userInfos">
                             <div className="user_img">
-
+                                <div className="userIMG">
+                                    <img alt="Owner IMG"/>
+                                </div>
                             </div>
                             <a href={playlistInfos.owner.external_urls.spotify} target="_blank" rel="noopener noreferrer">{playlistInfos.owner.display_name}</a>
-                        </div>
-                        <div className="listCount">
-                            {listCount} Músicas, cerca de XXXX
+                            {collectionType ? playlistInfos?.followers.total + " curtidas " + listCount + " músicas, "+ formatHour(listCount): listCount + " Músicas"}
                         </div>
                     </div>
                 </div>

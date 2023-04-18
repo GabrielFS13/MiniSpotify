@@ -17,6 +17,10 @@ header ul{
     right: 16px;
 }
 
+.user_infos .userIMG{
+    width: 26px;
+    height: 26px;
+}
 .play_playlist{
     display: flex;
     padding-top: 32px;

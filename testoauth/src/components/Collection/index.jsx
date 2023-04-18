@@ -14,7 +14,7 @@ function Collection({ token, setPlay, setSelected, playlist, currentTrack, play,
   const [hover, setHover] = useState({ i: null, hover: null })
   const [color, setColor] = useState({ backgroundColor: `rgb(${0},${0},${0})` })
   const [musics, setMusics] = useState([])
-
+  const [duration, setDuration] = useState(0)
   useEffect(() => {
     if (collectionType) {
       //pega o id da playlist
@@ -42,6 +42,8 @@ function Collection({ token, setPlay, setSelected, playlist, currentTrack, play,
           setMusics([...musics, ...resp?.tracks?.items])
           setApiUrl(resp?.next)
           setLen(resp.tracks.total)
+          setDuration(resp.tracks.items.map(((music) => music.track.duration_ms )))
+          setDuration(duration.reduce((acc, curr) => acc + curr, 0))
           //console.log(resp)
         } else {
           setMusics([...musics, ...resp?.items])
@@ -103,17 +105,16 @@ function Collection({ token, setPlay, setSelected, playlist, currentTrack, play,
   return (
     <div className="App" style={color}>
       <div className="collection_header">
-        <Header currentList={collectionType} listCount={listLen} authLink={authLink} setColor={(e) => setColor(e)} token={token}/>
+        <Header currentList={collectionType} listCount={listLen} authLink={authLink} setColor={(e) => setColor(e)} token={token} duration={duration}/>
       </div>
       <div className="musics" >
         <div className="play_btn">
           <div className='header_button' >
-            {console.log(play)}
-            {play && <BiPause size={30} color='black' onClick={() => setPlay(false)}/>}
+            {play && <BiPause size={30} color='black' onClick={() => setPlay(false)} />}
             {!play && <BsFillPlayFill size={30} color='black' onClick={() => {
               setPlay(true)
               setSelected([...musics.map(music => music.track.uri)])
-            }}/>}
+            }} />}
           </div>
           ...
         </div>
