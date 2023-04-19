@@ -2,9 +2,14 @@ import { useEffect, useState } from "react";
 import { BsFillPlayFill, BsSoundwave } from 'react-icons/bs'
 import { BiPause } from 'react-icons/bi'
 import { AiFillHeart } from 'react-icons/ai'
+import { HiOutlineClock } from 'react-icons/hi'
+import { IoEllipsisHorizontalSharp } from 'react-icons/io5'
 import './Collection.css'
 import { useParams } from "react-router-dom";
 import Header from "../Header";
+import PlaylistButton from "../PlaylistButton";
+import LikedMusicButton from "../LikedMusicsButton";
+import { useInView, InView } from 'react-intersection-observer';
 
 function Collection({ token, setPlay, setSelected, currentTrack, play, authLink, currentList }) {
 
@@ -14,6 +19,8 @@ function Collection({ token, setPlay, setSelected, currentTrack, play, authLink,
   const [hover, setHover] = useState({ i: null, hover: null })
   const [color, setColor] = useState({ backgroundColor: `rgb(${0},${0},${0})` })
   const [musics, setMusics] = useState([])
+  const { ref, inView, entry } = useInView();
+
 
   useEffect(() => {
     if (collectionType) {
@@ -27,8 +34,7 @@ function Collection({ token, setPlay, setSelected, currentTrack, play, authLink,
     setLen(0)
   }, [collectionType])
 
-
-  useEffect(() => {
+  function getMusics() {
     fetch(apiUrl, {
       method: "GET",
       headers: {
@@ -41,19 +47,26 @@ function Collection({ token, setPlay, setSelected, currentTrack, play, authLink,
           setMusics([...musics, ...resp.tracks.items])
           setApiUrl(resp?.next)
           setLen(resp.tracks.total)
-
           //console.log(resp)
         } else {
           setMusics([...musics, ...resp?.items])
           setApiUrl(resp?.next)
           setLen(resp.total)
           //console.log(resp)
-
         }
       })
       .catch(err => console.log(err))
+  }
 
-  }, [token, apiUrl])
+  useEffect(() => {
+    getMusics()
+  }, [token])
+
+  useEffect(()=>{
+    if(inView){
+      getMusics()
+    }
+  }, [inView, collectionType])
 
 
   function millisToMinutesAndSeconds(millis) {
@@ -107,45 +120,47 @@ function Collection({ token, setPlay, setSelected, currentTrack, play, authLink,
       </div>
       <div className="musics" >
         <div className="play_btn">
-          {collectionType && 
-          <div className='header_button'>
-            {!play && currentList ? <BsFillPlayFill size={30} color="black" onClick={() => {
-              setPlay(true)
-              setSelected({
-                playlist: collectionType ? collectionType : '',
-                list_musics: [...musics.map(music => music.track.uri)]
-              })
-            }}/> 
-            : currentList == collectionType ? <BiPause size={30} color='black' onClick={() => setPlay(false)}  /> : 
-            <BsFillPlayFill size={30} color="black" onClick={() => {
-              setPlay(true)
-              setSelected({
-                playlist: collectionType ? collectionType : '',
-                list_musics: [...musics.map(music => music.track.uri)]
-              })
-            }}/> 
-            }
-          </div>}
-          {!collectionType && 
-          <div className='header_button'>
-            {!play  && <BsFillPlayFill size={30} color="black" onClick={() => {
-              setPlay(true)
-              setSelected({
-                playlist: collectionType ? collectionType : '',
-                list_musics: [...musics.map(music => music.track.uri)]
-              })
-            }}/> 
-            }
-            {play && !currentList && <BiPause size={30} color='black' onClick={() => setPlay(false)}  /> }
-            {currentList && play && <BsFillPlayFill size={30} color="black" onClick={() => {
-              setPlay(true)
-              setSelected({
-                playlist: collectionType ? collectionType : '',
-                list_musics: [...musics.map(music => music.track.uri)]
-              })
-            }}/> }
-          </div>}
-          ...
+          {collectionType &&
+            <PlaylistButton
+              play={play}
+              currentList={currentList}
+              collectionType={collectionType}
+              musics={musics}
+              setPlay={(e) => setPlay(e)}
+              setSelected={(e) => setSelected(e)}
+            />
+          }
+          {!collectionType &&
+            <LikedMusicButton
+              play={play}
+              currentList={currentList}
+              collectionType={collectionType}
+              musics={musics}
+              setPlay={(e) => setPlay(e)}
+              setSelected={(e) => setSelected(e)}
+            />
+          }
+          {collectionType && <AiFillHeart color="#1ed760" size={30} />}
+          <div className="ellipisMenu">
+            <IoEllipsisHorizontalSharp size={20} color="#a7a7a7" />
+          </div>
+        </div>
+        <div className="musics_header">
+          <div className="header_button">
+            #
+          </div>
+          <div className="header_title">
+            Título
+          </div>
+          <div className="header_album">
+            Álbum
+          </div>
+          <div className="header_added">
+            Adicionada em
+          </div>
+          <div className="header_time clock">
+            <HiOutlineClock size={20} />
+          </div>
         </div>
         <div className="musics_container">
           {musics?.map((musica, i) => {
@@ -163,7 +178,7 @@ function Collection({ token, setPlay, setSelected, currentTrack, play, authLink,
                   <button onClick={() => {
                     setSelected({
                       playlist: collectionType ? collectionType : '',
-                      list_musics: [musica.track.uri, ...musics.filter(musc => musc.track.uri != musica.track.uri ).map(m => m.track.uri)]
+                      list_musics: [musica.track.uri, ...musics.filter(musc => musc.track.uri != musica.track.uri).map(m => m.track.uri)]
                     })
                   }} key={i} id={i} >
                     {
@@ -202,6 +217,8 @@ function Collection({ token, setPlay, setSelected, currentTrack, play, authLink,
               </div>
             )
           })}
+              {musics.length < listLen - 1 || musics.length === 0 ? <p className="loading"><img src="./loading.gif" alt="Carregando mais músicas..." /></p> : ''}
+              <div ref={ref} className="footer" id="footer"></div>
         </div>
       </div>
     </div>

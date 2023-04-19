@@ -25,7 +25,6 @@ body{
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  width: 100vw;
 }
 
 .screen{
@@ -35,10 +34,21 @@ body{
 }
 
 .player{
-  border-top: 1px solid #121212;; 
+  border-top: 1px solid #121212;
+  width: 100vw;
+  position: absolute;
+  bottom: 0;
 }
 
 .PlayerRSWP{
   height: 90px;
   width: 100%;
+}
+
+
+@media (max-width: 1050px)
+{
+  .header_added{
+    display: none;
+  }
 }

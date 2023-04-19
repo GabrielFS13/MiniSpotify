@@ -8,7 +8,9 @@ export default function Header({ token, listCount, authLink, setColor }) {
 
     const { collectionType } = useParams()
     const [currentUser, setCurrentUser] = useState()
-    // getUser info
+
+
+    // get loggedUser info
     useEffect(() => {
         if (token) {
             fetch("https://api.spotify.com/v1/me", {
@@ -27,9 +29,8 @@ export default function Header({ token, listCount, authLink, setColor }) {
     // getPlaylistinfo
     const [playlistInfos, setPlaylistInfos] = useState()
 
-    useEffect(() => {
-        if (token) {
-            fetch(`https://api.spotify.com/v1/playlists/${collectionType}`, {
+    function getPlaylistinfo(){
+        fetch(`https://api.spotify.com/v1/playlists/${collectionType}`, {
                 method: "GET",
                 headers: {
                     'Authorization': 'Bearer ' + token
@@ -39,6 +40,8 @@ export default function Header({ token, listCount, authLink, setColor }) {
                 .then(resp => {
                     if (collectionType) {
                         setPlaylistInfos({ ...resp })
+                        setownerID(resp.owner.id)
+
                     } else {
                         setPlaylistInfos({
                             name: "Músicas Curtidas",
@@ -58,8 +61,41 @@ export default function Header({ token, listCount, authLink, setColor }) {
                 })
                 .catch(err => console.log(err))
                 .finally(e => console.log(e))
+    }
+    useEffect(() => {
+        if (token) {
+            getPlaylistinfo()
         }
     }, [token, collectionType])
+
+    //getPlaylist Owner infos
+    const [ownerID, setownerID] = useState()
+    const [ownerPhoto, setOwnerPhoto] = useState()
+
+    function getOwnerImg(){
+        fetch(`https://api.spotify.com/v1/users/${ownerID}`,{
+            method: "GET",
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        .then(resp => resp.json())
+        .then(resp => {
+            resp.images.length > 0 ? setOwnerPhoto(resp.images[0].url) : setOwnerPhoto(null)
+        })
+        .catch(err => console.error(err))
+        
+    }
+
+    useEffect(()=>{
+        if(token && ownerID){
+            getOwnerImg()
+        }
+    }, [token, ownerID])
+
+
+
+
     function formatHour(count) {
         var totMinutos = Math.floor(count * 3.5)
         var horas = Math.floor(totMinutos / 60)
@@ -100,9 +136,10 @@ export default function Header({ token, listCount, authLink, setColor }) {
                     <div className="userListInfos">
                         <div className="userInfos">
                             <div className="user_img">
-                                <div className="userIMG">
-                                    <img alt="Owner IMG" />
-                                </div>
+                               {ownerPhoto &&  
+                               <div className="userIMG">
+                                    <img alt="Owner IMG" src={ownerPhoto} />
+                                </div>}
                             </div>
                             <a
                                 href={playlistInfos.owner.external_urls.spotify}
