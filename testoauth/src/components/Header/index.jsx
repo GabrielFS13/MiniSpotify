@@ -1,9 +1,9 @@
 import './Header.css'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { ColorExtractor } from 'react-color-extractor'
 import { useEffect, useState } from 'react'
-import { AiFillCaretDown } from 'react-icons/ai'
-import { SlArrowLeft, SlArrowRight} from 'react-icons/sl'
+import HeaderNav from '../HeaderNav'
+import getCurrentUser from '../Helpers/getCurrentUser'
 export default function Header({ token, listCount, authLink, setColor }) {
 
     const { collectionType } = useParams()
@@ -13,54 +13,44 @@ export default function Header({ token, listCount, authLink, setColor }) {
     // get loggedUser info
     useEffect(() => {
         if (token) {
-            fetch("https://api.spotify.com/v1/me", {
-                method: "GET",
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
-            })
-                .then(resp => resp.json())
-                .then(resp => {
-                    setCurrentUser(resp)
-                })
-                .catch(err => console.log(err))
+            setCurrentUser(getCurrentUser(token))
         }
     }, [token])
     // getPlaylistinfo
     const [playlistInfos, setPlaylistInfos] = useState()
 
-    function getPlaylistinfo(){
+    function getPlaylistinfo() {
         fetch(`https://api.spotify.com/v1/playlists/${collectionType}`, {
-                method: "GET",
-                headers: {
-                    'Authorization': 'Bearer ' + token
+            method: "GET",
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+            .then(resp => resp.json())
+            .then(resp => {
+                if (collectionType) {
+                    setPlaylistInfos({ ...resp })
+                    setownerID(resp.owner.id)
+
+                } else {
+                    setPlaylistInfos({
+                        name: "Músicas Curtidas",
+                        owner: {
+                            display_name: "current_user",
+                            external_urls: {
+                                spotify: 'current user url'
+                            }
+                        },
+                        images: ['', { url: './curtidas.png' }],
+                        description: '',
+                        followers: {
+                            total: null
+                        }
+                    })
                 }
             })
-                .then(resp => resp.json())
-                .then(resp => {
-                    if (collectionType) {
-                        setPlaylistInfos({ ...resp })
-                        setownerID(resp.owner.id)
-
-                    } else {
-                        setPlaylistInfos({
-                            name: "Músicas Curtidas",
-                            owner: {
-                                display_name: "current_user",
-                                external_urls: {
-                                    spotify: 'current user url'
-                                }
-                            },
-                            images: ['', { url: './curtidas.png' }],
-                            description: '',
-                            followers: {
-                                total: null
-                            }
-                        })
-                    }
-                })
-                .catch(err => console.log(err))
-                .finally(e => console.log(e))
+            .catch(err => console.log(err))
+            .finally(e => console.log(e))
     }
     useEffect(() => {
         if (token) {
@@ -72,23 +62,23 @@ export default function Header({ token, listCount, authLink, setColor }) {
     const [ownerID, setownerID] = useState()
     const [ownerPhoto, setOwnerPhoto] = useState()
 
-    function getOwnerImg(){
-        fetch(`https://api.spotify.com/v1/users/${ownerID}`,{
+    function getOwnerImg() {
+        fetch(`https://api.spotify.com/v1/users/${ownerID}`, {
             method: "GET",
             headers: {
                 'Authorization': 'Bearer ' + token
             }
         })
-        .then(resp => resp.json())
-        .then(resp => {
-            resp.images.length > 0 ? setOwnerPhoto(resp.images[0].url) : setOwnerPhoto(null)
-        })
-        .catch(err => console.error(err))
-        
+            .then(resp => resp.json())
+            .then(resp => {
+                resp.images.length > 0 ? setOwnerPhoto(resp.images[0].url) : setOwnerPhoto(null)
+            })
+            .catch(err => console.error(err))
+
     }
 
-    useEffect(()=>{
-        if(token && ownerID){
+    useEffect(() => {
+        if (token && ownerID) {
             getOwnerImg()
         }
     }, [token, ownerID])
@@ -104,24 +94,8 @@ export default function Header({ token, listCount, authLink, setColor }) {
     }
 
     return (
-        playlistInfos && currentUser ? <header>
-            <nav className='header_nav'>
-                <div className="navButtons">
-                    <ul className='nav_links'>
-                        <li><Link to={''}><SlArrowLeft /></Link></li>
-                        <li><Link to={''}><SlArrowRight /></Link></li>
-                    </ul>
-                </div>
-                <div className="user_infos">
-                    <div className="userModal">
-                        <div className="user_img">
-                            <img src={currentUser.images[0].url} alt={currentUser.display_name} />
-                        </div>
-                        {currentUser.display_name}
-                        <AiFillCaretDown />
-                    </div>
-                </div>
-            </nav>
+        playlistInfos && currentUser ? <header className='collection_header'>
+            <HeaderNav token={token} />
             <div className="play_playlist">
                 <div className="img">
                     <ColorExtractor rgb getColors={colors => setColor(
@@ -136,10 +110,10 @@ export default function Header({ token, listCount, authLink, setColor }) {
                     <div className="userListInfos">
                         <div className="userInfos">
                             <div className="user_img">
-                               {ownerPhoto &&  
-                               <div className="userIMG">
-                                    <img alt="Owner IMG" src={ownerPhoto} />
-                                </div>}
+                                {ownerPhoto &&
+                                    <div className="userIMG">
+                                        <img alt="Owner IMG" src={ownerPhoto} />
+                                    </div>}
                             </div>
                             <a
                                 href={playlistInfos.owner.external_urls.spotify}
@@ -148,9 +122,12 @@ export default function Header({ token, listCount, authLink, setColor }) {
                             >{playlistInfos.owner.display_name}</a>
                             {collectionType ?
                                 <ul className='playlist_infos'>
-                                    <li>
-                                        {playlistInfos?.followers.total} curtidas
-                                    </li>
+                                    {playlistInfos.followers.total > 0 ?
+                                        <li>
+                                            {playlistInfos?.followers.total} curtidas
+                                        </li>
+                                        : ''}
+
                                     <li>
                                         {listCount} Músicas,
                                     </li>

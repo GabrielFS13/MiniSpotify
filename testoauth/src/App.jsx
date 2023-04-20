@@ -5,7 +5,7 @@ import './App.css';
 import Collection from './components/Collection';
 import Menu from './components/Menu';
 import SpotifyPlayer from 'react-spotify-web-playback';
-
+import MyLibrary from './components/MyLibrary'
 
 const clientid = '5afe486064b145c6a8c852bd53deea04'
 const redirect = process.env.REACT_APP_REDIRECT_URI
@@ -49,12 +49,12 @@ function App() {
   return (
     <div>
       <div className='screen'>
-        <Menu 
-        token={token} 
-        setChoice={(e) => setChoice(e)} 
-        currentList={selectedMusic?.playlist} 
-        play={play}
-        setPlay={(e)=> setPlay(e)}
+        <Menu
+          token={token}
+          setChoice={(e) => setChoice(e)}
+          currentList={selectedMusic?.playlist}
+          play={play}
+          setPlay={(e) => setPlay(e)}
         />
         <Routes>
           <Route path='/'>
@@ -66,7 +66,7 @@ function App() {
                 currentTrack={currentTrack}
                 play={play}
                 setPlay={(e) => setPlay(e)}
-                currentList={selectedMusic?.playlist} 
+                currentList={selectedMusic?.playlist}
 
               />} />
             <Route path=":collectionType" element={
@@ -77,9 +77,12 @@ function App() {
                 currentTrack={currentTrack}
                 play={play}
                 setPlay={(e) => setPlay(e)}
-                currentList={selectedMusic?.playlist} 
+                currentList={selectedMusic?.playlist}
 
               />} />
+            <Route path="/library/:type" element={
+              <MyLibrary token={token} />
+            }/>
           </Route>
           <Route path='/callback' element={<Callback />} />
         </Routes>
@@ -89,7 +92,6 @@ function App() {
           callback={(e) => {
             setCurrent(e.track.uri)
             setPlay(e.isPlaying)
-            console.log(e)
           }}
           token={token}
           uris={selectedMusic.list_musics}
@@ -116,7 +118,6 @@ function Callback() {
   var q = window.location.search.split("&")
   q = q[0].split("=")
   q = q[1]
-  console.log("Tá aqui")
   useEffect(() => {
     navigate("/", { state: { code: q } })
   }, [])

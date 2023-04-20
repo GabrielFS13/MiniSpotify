@@ -4,6 +4,7 @@ import { MdOutlineDownloadForOffline } from 'react-icons/md'
 import { useEffect, useState } from 'react'
 import { HiOutlineSpeakerWave } from 'react-icons/hi2'
 import { BiPause } from 'react-icons/bi'
+import getPlaylists from '../Helpers/getPlaylists'
 
 export default function Menu({ setChoice, token, currentList, play, setPlay }) {
     var local = window.location.href.split('/')
@@ -14,18 +15,10 @@ export default function Menu({ setChoice, token, currentList, play, setPlay }) {
     const [speaker, setSpeaker] = useState(<HiOutlineSpeakerWave size={15} color='#1ed760' />)
     useEffect(() => {
         if (token) {
-            fetch(apiUrl, {
-                method: "GET",
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
+            getPlaylists(token, apiUrl).then(resp => {
+                setPlaylists(resp.items)
+                setPlaylistApiUrl(resp?.next)
             })
-                .then(resp => resp.json())
-                .then(resp => {
-                    setPlaylists(resp.items)
-                    resp.next ? setPlaylistApiUrl(resp.next) : setPlaylistApiUrl(apiUrl)
-                })
-                .catch(err => console.log(err))
         }
     }, [token, apiUrl])
     return (
@@ -37,7 +30,12 @@ export default function Menu({ setChoice, token, currentList, play, setPlay }) {
                 <ul>
                     <li>Início</li>
                     <li>Buscar</li>
-                    <li>Sua Biblioteca</li>
+                    <li 
+                    className={`${path == 'library' ? 'active' : ''} `}
+                    onClick={() => {
+                        setPath('library')
+                    }}
+                    ><Link to="/library/Playlists">Sua Biblioteca</Link></li>
                 </ul>
             </div>
             <div className="createFav">

@@ -1,13 +1,13 @@
-header{
-    height: 340px;
+.collection_header{
+    min-height: 340px;
     padding: 16px 32px;
 }
 
-header .header_nav{
+.collection_header .header_nav{
     display: flex;
     position: relative;
 }
-header .nav_links{
+.collection_header .nav_links{
     list-style: none;
     display: flex;
     gap: 16px;
@@ -36,7 +36,6 @@ header .nav_links{
 
 .play_playlist{
     display: flex;
-    flex-wrap: wrap;
     padding-top: 32px;
     gap: 16px;
     position: relative;
@@ -54,11 +53,8 @@ header .nav_links{
 }
 
 .infos{
-    position: absolute;
-    left: 250px;
-    bottom: 0;
+    margin-top: 50px;
 }
-
 .infos h1{
     padding-top: 6px;
     font-size: 6rem;
@@ -77,7 +73,7 @@ header .nav_links{
 }
 
 .userModal{
-    background-color: #121212;
+    background-color: black;
     border-radius: 30px;
     display: flex;
     justify-content: space-between;
@@ -88,6 +84,9 @@ header .nav_links{
     cursor: pointer;
 }
 
+.userModal:hover{
+    background-color: hsla(0,0%,100%,.1);
+}
 .userModal .user_img{
     width: 28px;
     height: 28px;
@@ -132,6 +131,12 @@ header .nav_links{
 
 .play_playlist .hour_avg{
     color: #a7a7a7;
+}
+
+@media (max-width: 1500px){
+    .infos h1{
+        font-size: 3rem;
+    }
 }
 
 @media (max-width: 1025px)
