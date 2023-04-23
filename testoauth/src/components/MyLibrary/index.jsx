@@ -1,64 +1,78 @@
 import { useState, useEffect } from "react";
 import HeaderNav from "../HeaderNav";
 import './MyLibrary.css'
-import getPlaylists from "../Helpers/getPlaylists";
+import getSpotifyData from "../Helpers/getSpotifyData";
 import { Link, useParams } from "react-router-dom";
 import { BsFillPlayFill } from "react-icons/bs";
+import PlaylistsComponent from "./PlaylistsComponent";
+import PodcastComponent from "./PodcastsComponent";
+import ArtistsComponent from "./ArtistsComponent";
+import AlbumComponent from "./AlbumsComponent";
 
 export default function MyLibrary({ token }) {
-    const {type} = useParams()
+    const { type } = useParams()
     const [selected, setSelected] = useState(type)
-    const [apiUrl, setApiurl] = useState('https://api.spotify.com/v1/me/playlists')
-    const [playlists, setPlaylists] = useState([])
+    const [apiPaylistApi, setPlaylsitApi] = useState('https://api.spotify.com/v1/me/playlists')
+    const [albumApi, setAlbumApi] = useState('https://api.spotify.com/v1/me/albums')
+    const [podCastsApi, setPodcastApi] = useState("https://api.spotify.com/v1/me/shows")
+    const [artistasApi, setArtistasApi] = useState("https://api.spotify.com/v1/me/following?type=artist")
+    const [playlistInfos, setPlaylistInfos] = useState([])
+    const [albumsInfos, setAlbumsInfos] = useState([])
+    const [artistasInfos, setArtistasInfos] = useState([])
+    const [podCastInfos, setPodcastinfos] = useState([])
+
 
     useEffect(() => {
-        if (token) {
-            getPlaylists(token, apiUrl).then(resp => {
-                setPlaylists(resp.items)
-                setApiurl(resp?.next)
+        setSelected(type)
+        if (token && type == 'Playlists') {
+            getSpotifyData(token, apiPaylistApi).then(resp => {
+                setPlaylistInfos(resp.items)
+                setPlaylsitApi(resp?.next)
+            })
+        } else if (token && type == 'Podcasts') {
+            //getPodcasts
+            getSpotifyData(token, podCastsApi).then(resp => {
+                setPodcastinfos(resp.items)
+                setPodcastApi(resp?.next)
+
+            })
+        } else if (token && type == 'Artistas') {
+            //Artistas
+            getSpotifyData(token, artistasApi).then(resp => {
+                setArtistasInfos(resp.artists.items)
+                setArtistasApi(resp?.next)
+            })
+        } else if (token && type == 'Albums') {
+            //Albums
+            getSpotifyData(token, albumApi).then(resp => {
+                setAlbumsInfos(resp.items)
+                setAlbumApi(resp?.next)
             })
         }
-    }, [token, apiUrl])
+    }, [token, type])
 
     return (
         <div className="App">
             <header className="library_header">
-                <HeaderNav token={token} buttons={['Playlists', 'Podcasts', 'Artistas', 'Álbuns']} />
+                <HeaderNav token={token} buttons={['Playlists', 'Podcasts', 'Artistas', 'Albums']} />
             </header>
             <main className="show_items">
                 <div className="selected_item">
                     <h1>{selected}</h1>
                 </div>
                 <div className="items">
-                    <div className="firtsItem">
+                    {type == 'Artistas' || type == 'Albums' ? '' :
+                        <div className="firtsItem">
 
-                    </div>
-                    {playlists.map((playlist, i) => {
-                        return (
-                            <Link 
-                                to={`/${playlist.id}`} key={i}>
-                                <div className="card">
-                                    <div className="card_img">
-                                        <img src={playlist.images[0]?.url} alt={playlist.name} />
-                                    </div>
-                                    <div className="card_infos">
-                                        <div className="card_playlist_title">
-                                            {playlist.name}
-                                        </div>
-                                        <div className="card_playlist_owner">
-                                            {playlist.description ? playlist.description : "De " + playlist.owner.display_name}
-                                        </div>
-                                        <div className="card_btn">
-                                            <BsFillPlayFill size={30} color="black" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </Link>
-                        )
-                    })}
+                        </div>
+                    }
+                    {type == 'Playlists' ? <PlaylistsComponent infos={playlistInfos} /> : ''}
+                    {type == 'Podcasts' ? <PodcastComponent infos={podCastInfos} /> : ''}
+                    {type == 'Artistas' ? <ArtistsComponent infos={artistasInfos} /> : ''}
+                    {type == 'Albums' ? <AlbumComponent infos={albumsInfos} /> : ''}
 
                 </div>
-                <div  className="footer" id="footer"></div>
+                <div className="footer" id="footer"></div>
             </main>
         </div>
     )

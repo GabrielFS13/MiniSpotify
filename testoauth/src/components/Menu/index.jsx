@@ -4,7 +4,7 @@ import { MdOutlineDownloadForOffline } from 'react-icons/md'
 import { useEffect, useState } from 'react'
 import { HiOutlineSpeakerWave } from 'react-icons/hi2'
 import { BiPause } from 'react-icons/bi'
-import getPlaylists from '../Helpers/getPlaylists'
+import getSpotifyData from '../Helpers/getSpotifyData'
 
 export default function Menu({ setChoice, token, currentList, play, setPlay }) {
     var local = window.location.href.split('/')
@@ -13,9 +13,10 @@ export default function Menu({ setChoice, token, currentList, play, setPlay }) {
     const [apiUrl, setPlaylistApiUrl] = useState('https://api.spotify.com/v1/me/playlists')
     const [playlists, setPlaylists] = useState([])
     const [speaker, setSpeaker] = useState(<HiOutlineSpeakerWave size={15} color='#1ed760' />)
+
     useEffect(() => {
         if (token) {
-            getPlaylists(token, apiUrl).then(resp => {
+            getSpotifyData(token, apiUrl).then(resp => {
                 setPlaylists(resp.items)
                 setPlaylistApiUrl(resp?.next)
             })

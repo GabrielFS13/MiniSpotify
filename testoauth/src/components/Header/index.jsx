@@ -94,7 +94,9 @@ export default function Header({ token, listCount, authLink, setColor }) {
     }
 
     return (
-        playlistInfos && currentUser ? <header className='collection_header'>
+        !token ? <a href={authLink} className='login_button'>Logar</a> : 
+
+        playlistInfos && currentUser && <header className='collection_header'>
             <HeaderNav token={token} />
             <div className="play_playlist">
                 <div className="img">
@@ -141,6 +143,5 @@ export default function Header({ token, listCount, authLink, setColor }) {
                 </div>
             </div>
         </header>
-            : !token ? <a href={authLink}>Logar</a> : ''
     )
 }

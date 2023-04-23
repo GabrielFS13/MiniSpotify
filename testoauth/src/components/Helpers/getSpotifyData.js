@@ -1,4 +1,4 @@
-export default async function getPlaylists(token, apiUrl){
+export default async function getSpotifyData(token, apiUrl){
     const conn = await fetch(apiUrl, {
         method: "GET",
         headers: {

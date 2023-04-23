@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { AiFillCaretDown } from "react-icons/ai";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import getCurrentUser from "../Helpers/getCurrentUser";
 
 export default function HeaderNav({token, buttons = []}) {
     const [currentUser, setCurrentUser] = useState()
-
+    const currentPage = useLocation().pathname;
     useEffect(()=>{
         if(token){
             getCurrentUser(token).then(resp => setCurrentUser(resp))
@@ -18,6 +18,13 @@ export default function HeaderNav({token, buttons = []}) {
                 <ul className='nav_links'>
                     <li><Link to={''}><SlArrowLeft /></Link></li>
                     <li><Link to={''}><SlArrowRight /></Link></li>
+                    {buttons.map((btn, i) =>{
+                        return <Link 
+                                    key={i} 
+                                    className={`header_nav_btn ${currentPage == "/library/"+btn ? 'actived' : ''}`}
+                                    to={`/library/${btn}`}
+                                    >{btn}</Link>
+                    })}
                 </ul>
             </div>
             <div className="user_infos">

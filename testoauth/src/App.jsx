@@ -9,9 +9,9 @@ import MyLibrary from './components/MyLibrary'
 
 const clientid = '5afe486064b145c6a8c852bd53deea04'
 const redirect = process.env.REACT_APP_REDIRECT_URI
-const scope = 'streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state user-library-read playlist-read-private'
-const state = Math.floor(Math.random() * 10 ^ 3)
-const authLink = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientid}&scope=${scope}&redirect_uri=${redirect}&state=${state}`
+const scope = 'streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state user-library-read playlist-read-private user-follow-read'
+const stateURL = Math.floor(Math.random() * 10 ^ 3)
+const authLink = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientid}&scope=${scope}&redirect_uri=${redirect}&state=${stateURL}`
 const baseURL = process.env.REACT_APP_BASE_URL
 
 function App() {

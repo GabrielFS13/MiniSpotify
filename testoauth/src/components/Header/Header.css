@@ -132,7 +132,16 @@
 .play_playlist .hour_avg{
     color: #a7a7a7;
 }
-
+.login_button{
+    position: absolute;
+    right: 30px;
+    background-color: #1ed760;
+    padding: 16px;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 20px;
+}
 @media (max-width: 1500px){
     .infos h1{
         font-size: 3rem;
