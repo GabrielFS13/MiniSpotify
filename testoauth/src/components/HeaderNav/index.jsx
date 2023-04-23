@@ -4,7 +4,7 @@ import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import { Link, useLocation } from "react-router-dom";
 import getCurrentUser from "../Helpers/getCurrentUser";
 
-export default function HeaderNav({token, buttons = []}) {
+export default function HeaderNav({token, buttons = [], search = false}) {
     const [currentUser, setCurrentUser] = useState()
     const currentPage = useLocation().pathname;
     useEffect(()=>{
@@ -25,6 +25,7 @@ export default function HeaderNav({token, buttons = []}) {
                                     to={`/library/${btn}`}
                                     >{btn}</Link>
                     })}
+                    {search && <input tyoe="search" placeholder="O que você quer ouvir?"/>}
                 </ul>
             </div>
             <div className="user_infos">

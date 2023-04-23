@@ -30,7 +30,12 @@ export default function Menu({ setChoice, token, currentList, play, setPlay }) {
             <div className="static_menu">
                 <ul>
                     <li>Início</li>
-                    <li>Buscar</li>
+                    <li 
+                    className={`${path == 'search' ? 'active' : ''} `}
+                    onClick={() => {
+                        setPath('search')
+                    }}
+                    ><Link to="/search">Buscar</Link></li>
                     <li 
                     className={`${path == 'library' ? 'active' : ''} `}
                     onClick={() => {

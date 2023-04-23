@@ -6,6 +6,7 @@ import Collection from './components/Collection';
 import Menu from './components/Menu';
 import SpotifyPlayer from 'react-spotify-web-playback';
 import MyLibrary from './components/MyLibrary'
+import Search from './components/Search';
 
 const clientid = '5afe486064b145c6a8c852bd53deea04'
 const redirect = process.env.REACT_APP_REDIRECT_URI
@@ -84,6 +85,8 @@ function App() {
               <MyLibrary token={token} />
             }/>
           </Route>
+          <Route path='/search' element={<Search token={token} />}
+          />
           <Route path='/callback' element={<Callback />} />
         </Routes>
       </div>

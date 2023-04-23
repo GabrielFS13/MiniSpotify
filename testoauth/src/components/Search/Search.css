@@ -1,0 +1,49 @@
+.search_header{
+    padding: 16px 32px;
+}
+
+.search_header .header_nav{
+    display: flex;
+    position: relative;
+}
+.search_header .nav_links{
+    list-style: none;
+    display: flex;
+    gap: 16px;
+}
+.categories_page{
+    padding: 32px;
+}
+.categories{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+.categories_card{
+    width: 194px;
+    height: 194px;
+    background-color: red;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+}
+
+.categorie_name{
+    padding: 16px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.categorie_img{
+    width: 132px;
+    height: 132px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: rotate(25deg) translate(18%,-2%);}
+
+.categorie_img img{
+    max-width: 100%;
+    max-height: 100%;
+}

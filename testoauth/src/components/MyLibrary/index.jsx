@@ -24,6 +24,7 @@ export default function MyLibrary({ token }) {
 
     useEffect(() => {
         setSelected(type)
+        
         if (token && type == 'Playlists') {
             getSpotifyData(token, apiPaylistApi).then(resp => {
                 setPlaylistInfos(resp.items)
@@ -49,6 +50,7 @@ export default function MyLibrary({ token }) {
                 setAlbumApi(resp?.next)
             })
         }
+
     }, [token, type])
 
     return (
