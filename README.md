@@ -21,11 +21,17 @@ Este é um projeto de reconstrução dinâmica do layout do Spotify, utilizando 
 ## Como Usar
 
 1. Clone este repositório:
-
-```bash
-git clone https://github.com/GabrielFS13/MiniSpotify.git
-
-
+   
+--CONFIGURE AS VARIÁVEIS DE AMBIENTE
 REACT_APP_SPOTIFY_CLIENT_ID= CLIENT ID CRIADO NO APP CRIADO NO SPOTIFY DEV
 REACT_APP_REDIRECT_URI= SUA URI CADASTRADA NO APP CRIADO NO SPOTIFY DEV
 REACT_APP_BASE_URL = DOMINIO DA HOSPEDAGEM
+
+```bash
+git clone https://github.com/GabrielFS13/MiniSpotify.git
+npm install
+npm start
+
+http://localhost:3000
+
+````
